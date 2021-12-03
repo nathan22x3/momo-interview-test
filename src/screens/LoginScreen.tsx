@@ -41,7 +41,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
     if (!isValidEmail(userInfo.email)) {
       setEmailError('Please enter a valid email!');
     } else {
-      dispatch(login(userInfo.email, userInfo.password));
+      dispatch(login(userInfo.email.trim(), userInfo.password.trim()));
       if (error) setLoginError('User not found!');
     }
   };

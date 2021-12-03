@@ -50,6 +50,7 @@ export default PhotoDetailScreen;
 const style = StyleSheet.create({
   container: {
     alignItems: 'center',
+    paddingTop: 40,
     paddingVertical: 20,
   },
   title: {

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MomoInterview",
-    "slug": "MomoInterview",
+    "name": "MomoInterviewTest",
+    "slug": "MomoInterviewTest",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
