@@ -9,7 +9,6 @@ import {
   ViewStyle,
 } from 'react-native';
 import { ThemeContext } from '../../contexts/ThemeContext';
-import { shade } from '../../utils/color';
 
 export interface ButtonProps {
   backgroundColor?: string;
@@ -67,7 +66,7 @@ const Button: React.FC<ButtonProps> = (props) => {
           <ActivityIndicator
             style={{ marginLeft: 10 }}
             size={20}
-            color={shade(color || theme.label, alpha)}
+            color={color || theme.white}
           />
         )}
       </View>
@@ -86,8 +85,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     width: '100%',
-    height: 50,
-    padding: 12,
+    height: 42,
+    padding: 7,
     borderRadius: 5,
     marginBottom: 15,
   },

@@ -3,9 +3,17 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack';
 import React from 'react';
+import PhotoDetailScreen from '../screens/PhotoDetailScreen';
 import HomeScreen from '../screens/HomeScreen';
 
-const Stack = createStackNavigator();
+export type AppStackParams = {
+  Home: {};
+  PhotoDetail: {
+    photoId: number;
+  };
+};
+
+const Stack = createStackNavigator<AppStackParams>();
 
 export interface AppStackProps {}
 
@@ -20,6 +28,7 @@ const AppStack: React.FC<AppStackProps> = (props) => {
       }}
     >
       <Stack.Screen name='Home' component={HomeScreen} />
+      <Stack.Screen name='PhotoDetail' component={PhotoDetailScreen} />
     </Stack.Navigator>
   );
 };

@@ -26,15 +26,13 @@ const App: React.FC<AppProps> = () => {
   return (
     <ThemeContext.Provider value={theme}>
       <ThemeContext.Consumer>
-        {(theme) => (
-          <>
-            <StatusBar backgroundColor={theme.toolbar} />
+        {() => (
+          <Provider {...{ store }}>
+            <StatusBar />
             <SafeAreaView style={styles.container}>
-              <Provider {...{ store }}>
-                <Routes />
-              </Provider>
+              <Routes />
             </SafeAreaView>
-          </>
+          </Provider>
         )}
       </ThemeContext.Consumer>
     </ThemeContext.Provider>

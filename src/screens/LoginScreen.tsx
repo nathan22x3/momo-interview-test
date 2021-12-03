@@ -1,55 +1,64 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useReducer, useState } from 'react';
 import {
-  Dimensions,
   Image,
   KeyboardAvoidingView,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../components/shared/Button';
 import TextInput from '../components/shared/TextInput';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { theme, ThemeContext } from '../contexts/ThemeContext';
 import { AppState } from '../store';
 import { login } from '../store/user/userActions';
-
-const { width } = Dimensions.get('window');
+import { isValidEmail } from '../utils/validation';
 
 export interface LoginScreenProps {}
 
 const LoginScreen: React.FC<LoginScreenProps> = (props) => {
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const { user, error, status } = useSelector((state: AppState) => state.user);
+  const { error, status } = useSelector((state: AppState) => state.user);
+  const [emailError, setEmailError] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   const [userInfo, setUserInfo] = useReducer(
     (state: Record<string, string>, newState: Record<string, string>) => ({
       ...state,
       ...newState,
     }),
-    { username: '', password: '' }
+    { email: '', password: '' }
   );
 
   const handleInputChange = (key: string, value: string) => {
     setUserInfo({ [key]: value });
   };
 
-  useEffect(() => {
-    console.log({ user, error });
-  }, [user]);
+  const handleLogin = () => {
+    setEmailError('');
+    setLoginError('');
+    if (!isValidEmail(userInfo.email)) {
+      setEmailError('Please enter a valid email!');
+    } else {
+      dispatch(login(userInfo.email, userInfo.password));
+      if (error) setLoginError('User not found!');
+    }
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.logo}>
         <Image
+          style={{ flex: 1 }}
           source={require('../../assets/momo-logo.png')}
-          resizeMode='center'
-          width={100}
+          resizeMode='contain'
         />
       </View>
+      {!!emailError && <Text style={styles.errorText}>{emailError}</Text>}
       <TextInput
-        placeholder={'Username'}
-        onChangeText={(value) => handleInputChange('username', value)}
+        placeholder={'Email'}
+        onChangeText={(value) => handleInputChange('email', value)}
       />
       <TextInput
         placeholder={'Password'}
@@ -57,13 +66,18 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
         onChangeText={(value) => handleInputChange('password', value)}
       />
       <Button
-        style={styles.button}
         color={theme.label}
-        onPress={() => dispatch(login(userInfo.username, userInfo.password))}
-        disabled={!userInfo.username || !userInfo.password}
+        onPress={handleLogin}
+        disabled={!userInfo.email || !userInfo.password}
+        loading={status === 'loading'}
       >
         Login
       </Button>
+      {!!loginError && (
+        <Text style={[styles.errorText, { textAlign: 'center' }]}>
+          {loginError}
+        </Text>
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -76,32 +90,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    width,
     paddingHorizontal: 20,
   },
   logo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 50,
-    marginBottom: 50,
-  },
-  button: {
-    width: '100%',
-  },
-  separator: {
-    position: 'relative',
     alignItems: 'center',
     width: '100%',
-    borderWidth: 0.7,
-    marginTop: 15,
-    marginBottom: 25,
+    marginBottom: 20,
+    height: 100,
   },
-  separatorText: {
-    position: 'absolute',
-    padding: 10,
-    transform: [{ translateY: -20 }],
+  errorText: {
+    marginBottom: 5,
     fontFamily: 'BeVietnam_500Medium',
-    textTransform: 'uppercase',
+    color: theme.momo,
   },
 });
